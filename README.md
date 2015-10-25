@@ -17,19 +17,38 @@ SOLUTIONS
 
 In this process, i have did the following:
 
-Setting working directory
-The script created to read data table y_train and x_train, features and activity_labels
-Merge the y_train with the activity label
-Eliminate the train2 1st column in order to avoid error "duplicate column name"
-Select only the columns that contains means and standard deviation - using variable "train4"
-Analysis of the Volunteer select for generating the test data - using variable "colnames"
-Merge the y_test with the activity label - using variable "subjecta", test, test1
-Combining y_test, activity labels, X_test
-Eliminate the train2 1st column in order to avoid error "duplicate column name" - variable "test3"
-Select only the columns that contains means and standard deviation - variable "test4"
-Combining Train data with Test data - variable "run_analysis1" using rbind
-Summary data and produce TIDYDATA.txt - using "run_analysis" variable
-Display summary data
-Write to TIDYDATA.txt
+1. Setting working directory
+2. The script created to read data table y_train and x_train, features and activity_labels
+3. Merge the y_train with the activity label
+4. Eliminate the train2 1st column in order to avoid error "duplicate column name"
+5. Select only the columns that contains means and standard deviation - using variable "train4"
+6. Analysis of the Volunteer select for generating the test data - using variable "colnames"
+7. Merge the y_test with the activity label - using variable "subjecta", test, test1
+8. Combining y_test, activity labels, X_test
+9. Eliminate the train2 1st column in order to avoid error "duplicate column name" - variable "test3"
+10. Select only the columns that contains means and standard deviation - variable "test4"
+11. Combining Train data with Test data - variable "run_analysis1" using rbind
+12. Summary data and produce TIDYDATA.txt - using "run_analysis" variable
+13. Display summary data
+14. Write to TIDYDATA.txt
+
+
+Finally, Create markdown file codebook.rmd and knitr and published codebook.html
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
