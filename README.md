@@ -8,7 +8,7 @@ SOLUTIONS
 
  CREATE run_analysis.R 
  
-1. Set working firectory
+1. Set working directory
 2. Merges the training and the test sets to create one data set.
 3. Extracts only the measurements on the mean and standard deviation for each measurement. 
 4. Uses descriptive activity names to name the activities in the data set.
