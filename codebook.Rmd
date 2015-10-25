@@ -1,0 +1,185 @@
+---
+title: "codebook"
+author: "areyou76"
+date: "October 22, 2015"
+output: html_document
+---
+
+
+##CODEBOOK.MD
+
+
+##Getting and Cleaning Data Course Project
+Instructions for project The purpose of this project is to demonstrate your ability to collect, work with, and clean a data set. The goal is to prepare tidy data that can be used for later analysis. You will be graded by your peers on a series of yes/no questions related to the project. You will be required to submit: 1) a tidy data set as described below, 2) a link to a Github repository with your script for performing the analysis, and 3) a code book that describes the variables, the data, and any transformations or work that you performed to clean up the data called CodeBook.md. You should also include a README.md in the repo with your scripts. This repo explains how all of the scripts work and how they are connected.
+
+One of the most exciting areas in all of data science right now is wearable computing - see for example this article . Companies like Fitbit, Nike, and Jawbone Up are racing to develop the most advanced algorithms to attract new users. The data linked to from the course website represent data collected from the accelerometers from the Samsung Galaxy S smartphone. A full description is available at the site where the data was obtained:
+
+http://archive.ics.uci.edu/ml/datasets/Human+Activity+Recognition+Using+Smartphones
+
+Here are the data for the project:
+
+https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip
+
+You should create one R script called run_analysis.R that does the following.
+
+Merges the training and the test sets to create one data set.
+Extracts only the measurements on the mean and standard deviation for each measurement.
+Uses descriptive activity names to name the activities in the data set
+Appropriately labels the data set with descriptive variable names.
+From the data set in step 4, creates a second, independent tidy data set with the average of each variable for each activity and each subject.
+
+
+##set working directory
+
+setwd("F:/1-DataScientistCertification/GettingandCleaningData/PeerAssessmentAsgnmnt/test/UCI HAR Dataset")
+
+
+```{r}
+library(knitr)
+```
+
+
+##Files in folder 'UCI HAR Dataset' that will be used are as following:
+
+
+1.SUBJECT FILES
+ test/subject_test.txt
+ train/subject_train.txt
+
+2.ACTIVITY FILES
+ test/X_test.txt
+ train/X_train.txt
+
+3. DATA FILES
+ test/y_test.txt
+ train/y_train.txt
+ 
+4.features.txt - Names of column variables in the dataTable
+
+5.activity_labels.txt - Links the class labels with their activity name.
+
+##Read the above files and create data tables.
+
+y_train <- read.table("train/y_train.txt", quote="\"")
+y_test <- read.table("test/y_test.txt", quote="\"")
+
+features <- read.table("features.txt", quote="\"")
+activity_labels <- read.table("activity_labels.txt", quote="\"")
+
+subject_train <- read.table("train/subject_train.txt", quote="\"")
+subject_test <- read.table("test/subject_test.txt", quote="\"")
+
+X_train <- read.table("train/X_train.txt", quote="\"")
+X_test <- read.table("test/X_test.txt", quote="\"")
+
+
+colnames(activity_labels)<- c("V1","Activity")
+
+#to merge the y_train with the activity label
+subject<- rename(subject_train, subject=V1)
+train<- cbind(y_train,subject)
+train1<- merge(train,activity_labels, by=("V1"))
+
+colnames(X_train)<- features[,2]
+
+train2<- cbind(train1,X_train)
+
+# Eliminate the train2 1st column in order to avoid error "duplicate column name"
+
+train3<- train2[,-1]
+
+#to select only the columns that contains means and standard deviation
+
+train4<- select(train3,contains("subject"), contains("Activity"), contains("mean"), contains("std"))
+
+
+#Analysis of the Volunteer select for generating the test data
+
+colnames(activity_labels)<- c("V1","Activity")
+
+#merge the y_test with the activity label
+
+subjecta<- rename(subject_test, subject=V1)
+test<- cbind(y_test,subjecta)
+test1<- merge(test,activity_labels, by=("V1"))
+
+
+colnames(X_test)<- features[,2]
+
+#Combining y_test, activity labels, X_test
+
+test2<- cbind(test1,X_test)
+
+
+# Eliminate the train2 1st column in order to avoid error "duplicate column name"
+test3<- test2[,-1]
+
+#select only the columns that contains means and standard deviation
+test4<- select(test3,contains("subject"), contains("Activity"), contains("mean"), contains("std"))
+
+
+
+# Combining Train data with Test data
+run_analysis1<- rbind(train4,test4)
+
+
+#Summary of data and produce TIDYDATA.txt
+
+
+run_analysis<- (run_analysis1%>%
+                  group_by(subject,Activity) %>%
+                  summarise_each(funs( mean)))
+
+print(run_analysis)
+
+
+Source: local data frame [180 x 88]
+Groups: subject [?]
+
+   subject           Activity tBodyAcc-mean()-X tBodyAcc-mean()-Y tBodyAcc-mean()-Z tGravityAcc-mean()-X
+     (int)             (fctr)             (dbl)             (dbl)             (dbl)                (dbl)
+1        1             LAYING         0.2875423       -0.01642767        -0.1138892            0.6215510
+2        1            SITTING         0.2755084       -0.01574349        -0.1066446            0.4900813
+3        1           STANDING         0.2796792       -0.01236445        -0.1103166            0.7001222
+4        1            WALKING         0.2734165       -0.01666060        -0.1039945            0.7466321
+5        1 WALKING_DOWNSTAIRS         0.2794456       -0.01739220        -0.1110561            0.7433348
+6        1   WALKING_UPSTAIRS         0.2863678       -0.01711514        -0.1061686            0.5367135
+7        2             LAYING         0.2824690       -0.02254480        -0.1088233            0.7849625
+8        2            SITTING         0.2849584       -0.01987180        -0.1102645            0.7459998
+9        2           STANDING         0.2785656       -0.01480572        -0.1112530            0.9056051
+10       2            WALKING         0.2691054       -0.01840628        -0.1098131            0.5415584
+..     ...                ...               ...               ...               ...                  ...
+Variables not shown: tGravityAcc-mean()-Y (dbl), tGravityAcc-mean()-Z (dbl), tBodyAccJerk-mean()-X (dbl),
+  tBodyAccJerk-mean()-Y (dbl), tBodyAccJerk-mean()-Z (dbl), tBodyGyro-mean()-X (dbl), tBodyGyro-mean()-Y
+  (dbl), tBodyGyro-mean()-Z (dbl), tBodyGyroJerk-mean()-X (dbl), tBodyGyroJerk-mean()-Y (dbl),
+  tBodyGyroJerk-mean()-Z (dbl), tBodyAccMag-mean() (dbl), tGravityAccMag-mean() (dbl),
+  tBodyAccJerkMag-mean() (dbl), tBodyGyroMag-mean() (dbl), tBodyGyroJerkMag-mean() (dbl), fBodyAcc-mean()-X
+  (dbl), fBodyAcc-mean()-Y (dbl), fBodyAcc-mean()-Z (dbl), fBodyAcc-meanFreq()-X (dbl),
+  fBodyAcc-meanFreq()-Y (dbl), fBodyAcc-meanFreq()-Z (dbl), fBodyAccJerk-mean()-X (dbl),
+  fBodyAccJerk-mean()-Y (dbl), fBodyAccJerk-mean()-Z (dbl), fBodyAccJerk-meanFreq()-X (dbl),
+  fBodyAccJerk-meanFreq()-Y (dbl), fBodyAccJerk-meanFreq()-Z (dbl), fBodyGyro-mean()-X (dbl),
+  fBodyGyro-mean()-Y (dbl), fBodyGyro-mean()-Z (dbl), fBodyGyro-meanFreq()-X (dbl), fBodyGyro-meanFreq()-Y
+  (dbl), fBodyGyro-meanFreq()-Z (dbl), fBodyAccMag-mean() (dbl), fBodyAccMag-meanFreq() (dbl),
+  fBodyBodyAccJerkMag-mean() (dbl), fBodyBodyAccJerkMag-meanFreq() (dbl), fBodyBodyGyroMag-mean() (dbl),
+  fBodyBodyGyroMag-meanFreq() (dbl), fBodyBodyGyroJerkMag-mean() (dbl), fBodyBodyGyroJerkMag-meanFreq()
+  (dbl), angle(tBodyAccMean,gravity) (dbl), angle(tBodyAccJerkMean),gravityMean) (dbl),
+  angle(tBodyGyroMean,gravityMean) (dbl), angle(tBodyGyroJerkMean,gravityMean) (dbl), angle(X,gravityMean)
+  (dbl), angle(Y,gravityMean) (dbl), angle(Z,gravityMean) (dbl), tBodyAcc-std()-X (dbl), tBodyAcc-std()-Y
+  (dbl), tBodyAcc-std()-Z (dbl), tGravityAcc-std()-X (dbl), tGravityAcc-std()-Y (dbl), tGravityAcc-std()-Z
+  (dbl), tBodyAccJerk-std()-X (dbl), tBodyAccJerk-std()-Y (dbl), tBodyAccJerk-std()-Z (dbl),
+  tBodyGyro-std()-X (dbl), tBodyGyro-std()-Y (dbl), tBodyGyro-std()-Z (dbl), tBodyGyroJerk-std()-X (dbl),
+  tBodyGyroJerk-std()-Y (dbl), tBodyGyroJerk-std()-Z (dbl), tBodyAccMag-std() (dbl), tGravityAccMag-std()
+  (dbl), tBodyAccJerkMag-std() (dbl), tBodyGyroMag-std() (dbl), tBodyGyroJerkMag-std() (dbl),
+  fBodyAcc-std()-X (dbl), fBodyAcc-std()-Y (dbl), fBodyAcc-std()-Z (dbl), fBodyAccJerk-std()-X (dbl),
+  fBodyAccJerk-std()-Y (dbl), fBodyAccJerk-std()-Z (dbl), fBodyGyro-std()-X (dbl), fBodyGyro-std()-Y (dbl),
+  fBodyGyro-std()-Z (dbl), fBodyAccMag-std() (dbl), fBodyBodyAccJerkMag-std() (dbl), fBodyBodyGyroMag-std()
+  (dbl), fBodyBodyGyroJerkMag-std() (dbl)
+  
+
+
+write.table(run_analysis,"TIDYDATA.txt",sep=" ",row.name=FALSE) 
+
+
+
+
+
