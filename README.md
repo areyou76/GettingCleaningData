@@ -15,5 +15,21 @@ SOLUTIONS
 5. Labels the data set with descriptive variable names. y_names, y_test, x_names, x_test, subject, train, train1 and etc. Refer codebook.html/.rmd
 6. Create independent tidy data set with the average of each variable for each activity and each subject. created TIDYDATA.txt
 
+In this process, i have did the following:
+
+Setting working directory
+The script created to read data table y_train and x_train, features and activity_labels
+Merge the y_train with the activity label
+Eliminate the train2 1st column in order to avoid error "duplicate column name"
+Select only the columns that contains means and standard deviation - using variable "train4"
+Analysis of the Volunteer select for generating the test data - using variable "colnames"
+Merge the y_test with the activity label - using variable "subjecta", test, test1
+Combining y_test, activity labels, X_test
+Eliminate the train2 1st column in order to avoid error "duplicate column name" - variable "test3"
+Select only the columns that contains means and standard deviation - variable "test4"
+Combining Train data with Test data - variable "run_analysis1" using rbind
+Summary data and produce TIDYDATA.txt - using "run_analysis" variable
+Display summary data
+Write to TIDYDATA.txt
 
 
